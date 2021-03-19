@@ -16,7 +16,16 @@
         <?php 
             echo $familia;
             if (isset($_POST['familia'])) $familia = $_POST['familia'];
-            $dwes = new PDO('mysql:host=localhost;dbname=dwes', 'dwes', 'abc123.');
+            
+            try{
+                $dwes = new PDO('mysql:host=localhost;dbname=dwes', 'dwes', 'abc123.');
+               $dwes->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            }catch (PDOException $e) {
+                $error = $e->getCode();
+                $mensaje = $e->getMessage();
+            }    
+
             $sql = "SELECT cod, nombre FROM familia";
             $resultado=$dwes->query($sql);
             
@@ -49,11 +58,8 @@
             if($resultado){
                 $row=$resultado->fetch();
                 while($row!=null){
-                    /*<form id="form_seleccion" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">*/
-                    //echo "<p>Producto : ${row['nombre']}, ${row['nombre_corto']}, ${row['PVP']}</p>";
-                    //echo "<p>Producto : ${row['nombre']}, ${row['nombre_corto']}, ${row['PVP']} <input type=".'"'."submit ".'"'.'value="'."Editar".'"'." name=".'"'."editar".'"'."/></p>";
+                    
                     echo "<form id=".'"'."form_producto".'"'.'action="'."editar.php".'"'."method=".'"'."get".'"'."/>";
-                    //echo '<p>Producto : '. $row['cod'].'</p>';
                     echo '<input type="hidden" name="cod" value="'. $row['cod'].'"/>';
                     echo "<p>Producto : ${row['nombre_corto']}, ${row['PVP']} <input type=".'"'."submit".'"'.'value="'."Editar".'"'." name=".'"'."editar".'"'."/></p>";
                     echo "</form>";
@@ -64,9 +70,7 @@
         ?>
     </div>
     <div id="pie">
-        <?php
-            unset($dwes);
-        ?>
+
     </div>
 </body>
 </html>
